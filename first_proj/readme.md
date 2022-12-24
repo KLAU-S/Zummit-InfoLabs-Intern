@@ -38,4 +38,5 @@ Information about the project's license and any third-party libraries or assets 
 
 - Any credits or acknowledgments for resources or inspiration that were used in the project.
 
-![Project Flow](flow.jpg)
+![1st part of the project](1st.png)
+![2nd part of the project](2.png)
