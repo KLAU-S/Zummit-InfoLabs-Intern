@@ -16,13 +16,13 @@ import cvlib as cv
 
 im_size= 200
 # load json 
-json_file = open('./model/model.json', 'r')
+json_file = open('models\\model.json', 'r')
 model = model_from_json(json_file.read()) 
 json_file.close()
 
 
 # load weights into new model
-model.load_weights("model.h5")
+model.load_weights("models\\model.h5")
 print("Model Loaded from disk ...")
 
 # open webcam
