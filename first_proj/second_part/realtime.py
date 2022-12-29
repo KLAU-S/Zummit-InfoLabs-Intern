@@ -1,60 +1,94 @@
-from keras.models import load_model
-from time import sleep
-from keras.preprocessing.image import img_to_array
-from keras.preprocessing import image
-import cv2
+"""
+Created on Thu Dec  3 29:00:00 2023
+
+@author: Enayat Kareem
+"""
+
 import numpy as np
+from tensorflow.keras.preprocessing.image import img_to_array
+from tensorflow.keras.models import load_model
 
-face_classifier=cv2.CascadeClassifier('haarcascades_models/haarcascade_frontalface_default.xml')
-emotion_model = load_model('emotion_detection_model_100epochs.h5')
-age_model = load_model('age_model_50epochs.h5')
-gender_model = load_model('gender_model_50epochs.h5')
+from keras.models import model_from_json
 
-class_labels=['Angry','Disgust', 'Fear', 'Happy','Neutral','Sad','Surprise']
-gender_labels = ['Male', 'Female']
+import cv2
+import cvlib as cv
+                    
 
-cap=cv2.VideoCapture(0)
+im_size= 200
+# load json 
+json_file = open('./model/model.json', 'r')
+model = model_from_json(json_file.read()) 
+json_file.close()
 
-while True:
-    ret,frame=cap.read()
-    labels=[]
+
+# load weights into new model
+model.load_weights("model.h5")
+print("Model Loaded from disk ...")
+
+# open webcam
+webcam = cv2.VideoCapture(0, apiPreference=cv2.CAP_DSHOW)
     
-    gray=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
-    faces=face_classifier.detectMultiScale(gray,1.3,5)
+classes = ['Woman','Man']
 
-    for (x,y,w,h) in faces:
-        cv2.rectangle(frame,(x,y),(x+w,y+h),(255,0,0),2)
-        roi_gray=gray[y:y+h,x:x+w]
-        roi_gray=cv2.resize(roi_gray,(48,48),interpolation=cv2.INTER_AREA)
+# loop through frames
+while webcam.isOpened():
 
-        # #Get image ready for prediction
-        # roi=roi_gray.astype('float')/255.0  #Scale
-        # roi=img_to_array(roi)
-        # roi=np.expand_dims(roi,axis=0)  #Expand dims to get it ready for prediction (1, 48, 48, 1)
+    # read frame from webcam 
+    status, frame = webcam.read()
 
-        # preds=emotion_model.predict(roi)[0]  #Yields one hot encoded result for 7 classes
-        # label=class_labels[preds.argmax()]  #Find the label
-        # label_position=(x,y)
-        # cv2.putText(frame,label,label_position,cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+    # apply face detection
+    face, confidence = cv.detect_face(frame)
+
+
+    # loop through detected faces
+    for idx, f in enumerate(face):
+
+        # get corner points of face rectangle        
+        (startX, startY) = f[0], f[1]
+        (endX, endY) = f[2], f[3]
+
+        # draw rectangle over face
+        cv2.rectangle(frame, (startX,startY), (endX,endY), (0,255,0), 2)
+
+        # crop the detected face region
+        face_crop = np.copy(frame[startY:endY,startX:endX])
+
+        if (face_crop.shape[0]) < 10 or (face_crop.shape[1]) < 10:
+            continue
+
+        # preprocessing for gender detection model
+        face_crop = cv2.resize(face_crop, (im_size,im_size))
+        face_crop = face_crop.astype("float") / 255.0
+        face_crop = img_to_array(face_crop)
+        face_crop = np.expand_dims(face_crop, axis=0)
         
-        #Gender
-        roi_color=frame[y:y+h,x:x+w]
-        roi_color=cv2.resize(roi_color,(200,200),interpolation=cv2.INTER_AREA)
-        gender_predict = gender_model.predict(np.array(roi_color).reshape(-1,200,200,3))
-        gender_predict = (gender_predict>= 0.5).astype(int)[:,0]
-        gender_label=gender_labels[gender_predict[0]] 
-        gender_label_position=(x,y+h+50) #50 pixels below to move the label outside the face
-        cv2.putText(frame,gender_label,gender_label_position,cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+        # apply gender detection on face, model.predict return a 2D matrix,age,gender_probability
+        age,gender_prob = model.predict(face_crop) 
+        print(age,gender_prob)
         
-        #Age
-        age_predict = age_model.predict(np.array(roi_color).reshape(-1,200,200,3))
-        age = round(age_predict[0,0])
-        age_label_position=(x+h,y+h)
-        cv2.putText(frame,"Age="+str(age),age_label_position,cv2.FONT_HERSHEY_SIMPLEX,1,(0,255,0),2)
+        # get label with max accuracy
+        age=np.round(age*100)[0][0]
         
-   
-    cv2.imshow('Emotion Detector', frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+        idx = np.argmax(gender_prob)
+        gender = classes[idx]
+        
+        
+
+        label = "{}: {}".format(gender, age)
+
+        Y = startY - 10 if startY - 10 > 10 else startY + 10
+
+        # write label and confidence above face rectangle
+        cv2.putText(frame, label, (startX, Y),  cv2.FONT_HERSHEY_SIMPLEX,
+                    0.7, (0, 255, 0), 2)
+
+    # display output
+    cv2.imshow("Age and Gender detection", frame)
+
+    # press "ESC" to stop
+    if  cv2.waitKey(5) == 27:
         break
-cap.release()
+
+# release resources
+webcam.release()
 cv2.destroyAllWindows()
