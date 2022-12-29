@@ -1,5 +1,5 @@
 numpy
 keras
 tensorflow
-cv2
+opencv-python
 cvlib
