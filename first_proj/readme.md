@@ -24,10 +24,21 @@ To run this project, you will need the following software and libraries:
 
 ### Installing
 
-1. Clone this repository to your local machine:
+1. Create a Virtual Environment and activate it using commands
+```virtualenv *new_env_name*```
+```cd /path/to/*new_env_name*/Scripts/```
+```.\activate if using cmd or .\activate.ps1 if you are using powershell```
+
+2. Clone this repository to your local machine:
 ```https://github.com/KLAU-S/Zummit-InfoLabs-Intern```
-2. Install the required libraries: 
-```pip install numpy pandas tensorflow keras opencv-python```
+
+3. Install the required libraries: 
+```pip install -r requirements.txt```
+
+4. If you want to generate your own model Run the first part first, that will generate the model. if not skip running the first part and you can directly run realtime.py using command
+```python realtime.py```
+
+5. Enjoy !!!
 
 ## Authors
 
@@ -35,9 +46,9 @@ To run this project, you will need the following software and libraries:
 
 ## License
 
-Information about the project's license and any third-party libraries or assets that are used.
+No license, use it however you'd like, thankyou !
 
 ## Acknowledgments
 
-- Any credits or acknowledgments for resources or inspiration that were used in the project.
+- So many people to acknowledge, my family, my co-interns, my friends without which this project would not be completed, Special thanks to Brillia for the hard work and dedication, such a pleasure.
 
