@@ -7,6 +7,11 @@ A machine learning model that can predict a person's age and gender from a singl
 
 2. **Part 2**: A real-time implementation of the model using a webcam or video feed. The model is trained on the same dataset as Part 1 and uses the same techniques, but it is optimized for real-time performance.
 ![2nd part of the project](https://github.com/KLAU-S/Zummit-InfoLabs-Intern/blob/master/first_proj/misc/second.png)
+
+
+![testing Real time](https://github.com/KLAU-S/Zummit-InfoLabs-Intern/blob/master/first_proj/misc/rt_test.png)
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -15,27 +20,28 @@ These instructions will get you a copy of the project up and running on your loc
 
 To run this project, you will need the following software and libraries:
 
-- Python 3.6 or higher
+- 3.6 <= Python <= 3.9 
 - NumPy
 - Pandas
 - TensorFlow
 - Keras
 - OpenCV (for Part 2 only)
+- cvlib
 
 ### Installing
 
-1. Create a Virtual Environment and activate it using commands
-```virtualenv *new_env_name*```
-```cd /path/to/*new_env_name*/Scripts/```
-```.\activate if using cmd or .\activate.ps1 if you are using powershell```
+1. Create a Virtual Environment and activate it using commands:  
+```virtualenv *new_env_name*```  
+```cd /path/to/*new_env_name*/Scripts/```  
+```.\activate if using cmd or .\activate.ps1 if you are using powershell```  
 
-2. Clone this repository to your local machine:
+2. Clone this repository to your local machine:  
 ```https://github.com/KLAU-S/Zummit-InfoLabs-Intern```
 
 3. Install the required libraries: 
 ```pip install -r requirements.txt```
 
-4. If you want to generate your own model Run the first part first, that will generate the model. if not skip running the first part and you can directly run realtime.py using command
+4. If you want to generate your own model Run the first part first, that will generate the model. if not skip running the first part and you can directly run realtime.py using command:  
 ```python realtime.py```
 
 5. Enjoy !!!
@@ -50,5 +56,5 @@ No license, use it however you'd like, thankyou !
 
 ## Acknowledgments
 
-- So many people to acknowledge, my family, my co-interns, my friends without which this project would not be completed, Special thanks to Brillia for the hard work and dedication, such a pleasure.
+- So many people to acknowledge, my family, my co-interns, my friends without which this project would not be completed, Special thanks to Brillia and Swati for the hard work and dedication, such a pleasure.
 
