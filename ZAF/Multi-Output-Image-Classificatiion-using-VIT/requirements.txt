@@ -1,0 +1,6 @@
+torch
+numpy
+torchvision
+pillow
+pytorch_lightning
+transformers
